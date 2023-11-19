@@ -70,7 +70,7 @@ object PekkoDependency {
   implicit class RichProject(project: Project) {
 
     /** Adds either a source or a binary dependency, depending on whether the above settings are set */
-    def addPekkoModuleDependency(module: String, config: String = "", pekko: Pekko): Project =
+    def addPekkoModuleDependency(module: String, config: String, pekko: Pekko): Project =
       pekko match {
         case Sources(sources, _) =>
           // as a little hacky side effect also disable aggregation of samples
