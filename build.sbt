@@ -13,7 +13,7 @@ scalacOptions ++= Seq(
 ThisBuild / scalaVersion := "2.12.18"
 
 libraryDependencies ++= Seq(
-  "org.scalatest"     %% "scalatest"        % "3.2.17" % Test
+  "org.scalatest" %% "scalatest" % "3.2.17" % Test
 )
 
 homepage := Some(url("https://github.com/pjfanning/sbt-pekko-build"))
@@ -23,6 +23,8 @@ licenses := Seq("APL2" -> url("https://www.apache.org/licenses/LICENSE-2.0.txt")
 developers := List(
   Developer(id = "pjfanning", name = "PJ Fanning", email = "", url = url("https://github.com/pjfanning"))
 )
+
+addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "1.1.3")
 
 ThisBuild / githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test")))
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")

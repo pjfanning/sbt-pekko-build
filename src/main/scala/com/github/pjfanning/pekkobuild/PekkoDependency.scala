@@ -13,12 +13,11 @@
 
 package com.github.pjfanning.pekkobuild
 
-
 import sbt._
 import sbt.Keys._
+import com.github.pjfanning.pekkobuild.PekkoBuildPlugin.autoImport._
 
 import scala.util.matching.Regex.Groups
-import com.github.pjfanning.pekkobuild.PekkoBuildPlugin.autoImport.*
 
 object PekkoDependency {
 
@@ -41,24 +40,25 @@ object PekkoDependency {
     def version = link
   }
 
-  def pekkoDependency(defaultVersion: String): Pekko = {
+  def pekkoDependency(defaultVersion: String): Pekko =
     Option(System.getProperty("pekko.sources")) match {
       case Some(pekkoSources) =>
         Sources(pekkoSources)
       case None =>
         Option(System.getProperty("pekko.build.pekko.version")) match {
-          case Some("main")           => mainSnapshot
+          case Some("main")           => snapshotMain
+          case Some("1.0.x")          => snapshot10x
           case Some("default") | None => Artifact(defaultVersion)
           case Some(other)            => Artifact(other, true)
         }
     }
-  }
 
   val default = Def.setting {
     pekkoDependency(defaultVersion = (ThisBuild / pekkoMinVersion).value)
   }
 
-  lazy val mainSnapshot = Artifact(determineLatestSnapshot(), true)
+  lazy val snapshot10x  = Artifact(determineLatestSnapshot("1.0"), true)
+  lazy val snapshotMain = Artifact(determineLatestSnapshot(), true)
 
   val pekkoVersion: Def.Initialize[String] = Def.setting {
     default.value match {
@@ -70,9 +70,7 @@ object PekkoDependency {
   implicit class RichProject(project: Project) {
 
     /** Adds either a source or a binary dependency, depending on whether the above settings are set */
-    def addPekkoModuleDependency(module: String,
-        config: String = "",
-        pekko: Pekko): Project =
+    def addPekkoModuleDependency(module: String, config: String = "", pekko: Pekko): Project =
       pekko match {
         case Sources(sources, _) =>
           // as a little hacky side effect also disable aggregation of samples
@@ -94,37 +92,44 @@ object PekkoDependency {
             },
             resolvers ++= (if (pekkoSnapshot)
                              Seq(Resolver.ApacheMavenSnapshotsRepo)
-                           else Nil))
+                           else Nil)
+          )
       }
   }
 
   private def determineLatestSnapshot(prefix: String = ""): String = {
-    import gigahorse.GigahorseSupport.url
     import sbt.librarymanagement.Http.http
-
+    import gigahorse.GigahorseSupport.url
     import scala.concurrent.Await
-    import scala.concurrent.duration.*
+    import scala.concurrent.duration._
 
     val snapshotVersionR = """href=".*/((\d+)\.(\d+)\.(\d+)(-(M|RC)(\d+))?\+(\d+)-[0-9a-f]+-SNAPSHOT)/"""".r
 
     // pekko-cluster-sharding-typed_2.13 seems to be the last nightly published by `pekko-publish-nightly` so if that's there then it's likely the rest also made it
-    val body = Await.result(http.run(url(
-        s"${Resolver.ApacheMavenSnapshotsRepo.root}org/apache/pekko/pekko-cluster-sharding-typed_2.13/")),
-      10.seconds).bodyAsString
+    val body = Await
+      .result(
+        http.run(url(s"${Resolver.ApacheMavenSnapshotsRepo.root}org/apache/pekko/pekko-cluster-sharding-typed_2.13/")),
+        10.seconds
+      )
+      .bodyAsString
 
+    // we use tagNumber set as Integer.MAX_VALUE when there is no tagNumber
+    // this ensures that RC and Milestone versions are treated as older than non-RC/non-milestone versions
     val allVersions =
-      snapshotVersionR.findAllMatchIn(body)
-        .map {
-          case Groups(full, ep, maj, min, _, _, tagNumber, offset) =>
-            (
-              ep.toInt,
-              maj.toInt,
-              min.toInt,
-              Option(tagNumber).map(_.toInt),
-              offset.toInt) -> full
+      snapshotVersionR
+        .findAllMatchIn(body)
+        .map { case Groups(full, ep, maj, min, _, _, tagNumber, offset) =>
+          (ep.toInt,
+           maj.toInt,
+           min.toInt,
+           Option(tagNumber).map(_.toInt).getOrElse(Integer.MAX_VALUE),
+           offset.toInt
+          ) -> full
         }
         .filter(_._2.startsWith(prefix))
-        .toVector.sortBy(_._1)
+        .toVector
+        .sortBy(_._1)
+
     allVersions.last._2
   }
 }
