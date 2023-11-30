@@ -90,18 +90,23 @@ object PekkoDependency {
       }
   }
 
-  private def determineLatestSnapshot(prefix: String = ""): String = {
+  private def determineLatestSnapshot(prefix: String = ""): String = determineLatestVersion(true, prefix)
+
+  private def determineLatestVersion(useSnapshots: Boolean, prefix: String): String = {
     import sbt.librarymanagement.Http.http
     import gigahorse.GigahorseSupport.url
     import scala.concurrent.Await
     import scala.concurrent.duration._
 
-    val snapshotVersionR = """href=".*/((\d+)\.(\d+)\.(\d+)(-(M|RC)(\d+))?\+(\d+)-[0-9a-f]+-SNAPSHOT)/"""".r
+    val base        = """href=".*/((\d+)\.(\d+)\.(\d+)(-(M|RC)(\d+))?\+(\d+)-[0-9a-f]+"""
+    val regexString = if (useSnapshots) s"$base-SNAPSHOT)/" else s"$base)/"
+    val versionR    = regexString.r
+    val repo        = if (useSnapshots) Resolver.ApacheMavenSnapshotsRepo.root else Resolver.DefaultMavenRepositoryRoot
 
     // pekko-cluster-sharding-typed_2.13 seems to be the last nightly published by `pekko-publish-nightly` so if that's there then it's likely the rest also made it
     val body = Await
       .result(
-        http.run(url(s"${Resolver.ApacheMavenSnapshotsRepo.root}org/apache/pekko/pekko-cluster-sharding-typed_2.13/")),
+        http.run(url(s"${repo}org/apache/pekko/pekko-cluster-sharding-typed_2.13/")),
         10.seconds
       )
       .bodyAsString
@@ -109,7 +114,7 @@ object PekkoDependency {
     // we use tagNumber set as Integer.MAX_VALUE when there is no tagNumber
     // this ensures that RC and Milestone versions are treated as older than non-RC/non-milestone versions
     val allVersions =
-      snapshotVersionR
+      versionR
         .findAllMatchIn(body)
         .map { case Groups(full, ep, maj, min, _, _, tagNumber, offset) =>
           (ep.toInt,
