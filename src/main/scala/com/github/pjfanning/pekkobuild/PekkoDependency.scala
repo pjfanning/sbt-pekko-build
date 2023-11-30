@@ -52,12 +52,13 @@ object PekkoDependency {
         }
     }
 
-  val default = pekkoDependency("1.0.0")
+  private val defaultPekkoVersion = System.getProperty("pekko.build.pekko.min.version", "1.0.0")
+  val default                     = pekkoDependency(defaultPekkoVersion)
 
-  lazy val snapshot10x = Artifact(determineLatestSnapshot("1.0"), true)
+  lazy val snapshot10x  = Artifact(determineLatestSnapshot("1.0"), true)
   lazy val snapshotMain = Artifact(determineLatestSnapshot(), true)
 
-  val pekkoVersion = default match {
+  val pekkoVersion: String = default match {
     case Artifact(version, _) => version
     case Sources(uri, _)      => uri
   }
@@ -65,7 +66,7 @@ object PekkoDependency {
   implicit class RichProject(project: Project) {
 
     /** Adds either a source or a binary dependency, depending on whether the above settings are set */
-    def addPekkoModuleDependency(module: String, config: String, pekko: Pekko): Project =
+    def addPekkoModuleDependency(module: String, config: String, pekko: Pekko = default): Project =
       pekko match {
         case Sources(sources, _) =>
           val moduleRef = ProjectRef(uri(sources), module)
