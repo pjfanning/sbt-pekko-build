@@ -66,7 +66,7 @@ object PekkoDependency {
   implicit class RichProject(project: Project) {
 
     /** Adds either a source or a binary dependency, depending on whether the above settings are set */
-    def addPekkoModuleDependency(module: String, config: String, pekko: Pekko = default): Project =
+    def addPekkoModuleDependency(module: String, config: String = "", pekko: Pekko = default): Project =
       pekko match {
         case Sources(sources, _) =>
           val moduleRef = ProjectRef(uri(sources), module)
