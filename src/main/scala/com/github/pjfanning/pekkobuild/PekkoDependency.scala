@@ -13,10 +13,11 @@
 
 package com.github.pjfanning.pekkobuild
 
-import sbt._
-import sbt.Keys._
+import sbt.*
+import sbt.Keys.*
 
 import scala.util.matching.Regex.Groups
+import scala.util.matching.Regex.Match.unapply
 
 object PekkoDependency {
 
@@ -102,10 +103,10 @@ object PekkoDependency {
     import scala.concurrent.Await
     import scala.concurrent.duration._
 
-    val base     = """href=".*/((\d+)\.(\d+)\.(\d+)(-(M|RC)(\d+))?"""
-    val appended = if (useSnapshots) base + """\+(\d+)-[0-9a-f]+-SNAPSHOT""" else base
-    println("trying " + (appended + ")\""))
-    val versionR = (appended + ")\"").r
+    val regex =
+      if (useSnapshots) """href=".*/((\d+)\.(\d+)\.(\d+)(-(M|RC)(\d+))?\+(\d+)-[0-9a-f]+-SNAPSHOT)/""""
+      else """>.*((\d+)\.(\d+)\.(\d+)(-(M|RC)(\d+))?)/<"""
+    val versionR = regex.r
     val repo     = if (useSnapshots) Resolver.ApacheMavenSnapshotsRepo.root else Resolver.DefaultMavenRepositoryRoot
 
     // pekko-cluster-sharding-typed_2.13 seems to be the last nightly published by `pekko-publish-nightly` so if that's there then it's likely the rest also made it
@@ -119,19 +120,29 @@ object PekkoDependency {
     // we use tagNumber set as Integer.MAX_VALUE when there is no tagNumber
     // this ensures that RC and Milestone versions are treated as older than non-RC/non-milestone versions
     val allVersions =
-      versionR
-        .findAllMatchIn(body)
-        .map { case Groups(full, ep, maj, min, _, _, tagNumber, offset) =>
-          (ep.toInt,
-           maj.toInt,
-           min.toInt,
-           Option(tagNumber).map(_.toInt).getOrElse(Integer.MAX_VALUE),
-           offset.toInt
-          ) -> full
-        }
-        .filter(_._2.startsWith(prefix))
-        .toVector
-        .sortBy(_._1)
+      if (useSnapshots)
+        versionR
+          .findAllMatchIn(body)
+          .map { case Groups(full, ep, maj, min, _, _, tagNumber, offset) =>
+            (ep.toInt,
+             maj.toInt,
+             min.toInt,
+             Option(tagNumber).map(_.toInt).getOrElse(Integer.MAX_VALUE),
+             offset.toInt
+            ) -> full
+          }
+          .filter(_._2.startsWith(prefix))
+          .toVector
+          .sortBy(_._1)
+      else
+        versionR
+          .findAllMatchIn(body)
+          .map { case Groups(full, ep, maj, min, _, _, tagNumber) =>
+            (ep.toInt, maj.toInt, min.toInt, Option(tagNumber).map(_.toInt).getOrElse(Integer.MAX_VALUE)) -> full
+          }
+          .filter(_._2.startsWith(prefix))
+          .toVector
+          .sortBy(_._1)
 
     allVersions.last._2
   }
