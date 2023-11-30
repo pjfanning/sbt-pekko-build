@@ -15,7 +15,6 @@ package com.github.pjfanning.pekkobuild
 
 import sbt._
 import sbt.Keys._
-import com.github.pjfanning.pekkobuild.PekkoBuildPlugin.autoImport._
 
 import scala.util.matching.Regex.Groups
 
@@ -53,18 +52,14 @@ object PekkoDependency {
         }
     }
 
-  val default = Def.setting {
-    pekkoDependency(defaultVersion = (ThisBuild / pekkoMinVersion).value)
-  }
+  val default = pekkoDependency("1.0.0")
 
-  lazy val snapshot10x  = Artifact(determineLatestSnapshot("1.0"), true)
+  lazy val snapshot10x = Artifact(determineLatestSnapshot("1.0"), true)
   lazy val snapshotMain = Artifact(determineLatestSnapshot(), true)
 
-  val pekkoVersion: Def.Initialize[String] = Def.setting {
-    default.value match {
-      case Artifact(version, _) => version
-      case Sources(uri, _)      => uri
-    }
+  val pekkoVersion = default match {
+    case Artifact(version, _) => version
+    case Sources(uri, _)      => uri
   }
 
   implicit class RichProject(project: Project) {
@@ -73,9 +68,6 @@ object PekkoDependency {
     def addPekkoModuleDependency(module: String, config: String, pekko: Pekko): Project =
       pekko match {
         case Sources(sources, _) =>
-          // as a little hacky side effect also disable aggregation of samples
-          System.setProperty("pekko.build.aggregateSamples", "false")
-
           val moduleRef = ProjectRef(uri(sources), module)
           val withConfig: ClasspathDependency =
             if (config == "") moduleRef
