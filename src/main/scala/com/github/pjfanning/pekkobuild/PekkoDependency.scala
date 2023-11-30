@@ -47,6 +47,7 @@ object PekkoDependency {
         Option(System.getProperty("pekko.build.pekko.version")) match {
           case Some("main")           => snapshotMain
           case Some("1.0.x")          => snapshot10x
+          case Some("latest-release") => latestRelease
           case Some("default") | None => Artifact(defaultVersion)
           case Some(other)            => Artifact(other, true)
         }
@@ -55,8 +56,9 @@ object PekkoDependency {
   private val defaultPekkoVersion = System.getProperty("pekko.build.pekko.min.version", "1.0.0")
   val default                     = pekkoDependency(defaultPekkoVersion)
 
-  lazy val snapshot10x  = Artifact(determineLatestSnapshot("1.0"), true)
-  lazy val snapshotMain = Artifact(determineLatestSnapshot(), true)
+  lazy val snapshot10x   = Artifact(determineLatestSnapshot("1.0"), true)
+  lazy val snapshotMain  = Artifact(determineLatestSnapshot(), true)
+  lazy val latestRelease = Artifact(determineLatestRelease(), false)
 
   val pekkoVersion: String = default match {
     case Artifact(version, _) => version
@@ -92,16 +94,19 @@ object PekkoDependency {
 
   private def determineLatestSnapshot(prefix: String = ""): String = determineLatestVersion(true, prefix)
 
+  private def determineLatestRelease(prefix: String = ""): String = determineLatestVersion(false, prefix)
+
   private def determineLatestVersion(useSnapshots: Boolean, prefix: String): String = {
     import sbt.librarymanagement.Http.http
     import gigahorse.GigahorseSupport.url
     import scala.concurrent.Await
     import scala.concurrent.duration._
 
-    val base        = """href=".*/((\d+)\.(\d+)\.(\d+)(-(M|RC)(\d+))?\+(\d+)-[0-9a-f]+"""
-    val regexString = if (useSnapshots) s"$base-SNAPSHOT)/" else s"$base)/"
-    val versionR    = regexString.r
-    val repo        = if (useSnapshots) Resolver.ApacheMavenSnapshotsRepo.root else Resolver.DefaultMavenRepositoryRoot
+    val base     = """href=".*/((\d+)\.(\d+)\.(\d+)(-(M|RC)(\d+))?"""
+    val appended = if (useSnapshots) base + """\+(\d+)-[0-9a-f]+-SNAPSHOT""" else base
+    println("trying " + (appended + ")\""))
+    val versionR = (appended + ")\"").r
+    val repo     = if (useSnapshots) Resolver.ApacheMavenSnapshotsRepo.root else Resolver.DefaultMavenRepositoryRoot
 
     // pekko-cluster-sharding-typed_2.13 seems to be the last nightly published by `pekko-publish-nightly` so if that's there then it's likely the rest also made it
     val body = Await
