@@ -4,7 +4,7 @@ Copies 2 features from different Pekko repos that are useful to share around our
 
 * PekkoDependency has code to get latest release and snapshot versions for core Pekko jars
 * Mima builds on sbt-mima-plugin and provides support for looking up exclude files in `mima-filters` directories.
-    - you'll find examples in https://github.com/apache/incubator-pekko
+    - see https://github.com/apache/incubator-pekko/blob/main/CONTRIBUTING.md#binary-compatibility
 
 ## PekkoDependency
 * defaults to `1.0.0` because we want to maintain compatibility with all Pekko 1 releases
