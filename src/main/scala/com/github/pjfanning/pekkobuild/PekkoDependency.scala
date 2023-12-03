@@ -13,11 +13,10 @@
 
 package com.github.pjfanning.pekkobuild
 
-import sbt.*
-import sbt.Keys.*
+import sbt._
+import sbt.Keys._
 
 import scala.util.matching.Regex.Groups
-import scala.util.matching.Regex.Match.unapply
 
 object PekkoDependency {
 
