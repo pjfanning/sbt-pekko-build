@@ -65,6 +65,12 @@ object PekkoDependency {
     case Sources(uri, _)      => uri
   }
 
+  def pekkoVersionDerivedFromDefault(overrideDefaultPekkoVersion: String): String =
+    pekkoDependency(overrideDefaultPekkoVersion) match {
+      case Artifact(version, _) => version
+      case Sources(uri, _)      => uri
+    }
+
   implicit class RichProject(project: Project) {
 
     /** Adds either a source or a binary dependency, depending on whether the above settings are set */
