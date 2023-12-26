@@ -13,15 +13,15 @@
 
 package com.github.pjfanning.pekkobuild
 
-object PekkoDependency extends VersionRegex {
-  override val checkProject: String = "pekko-cluster-sharding-typed"
+object PekkoHttpDependency extends VersionRegex {
+  override val checkProject: String = "pekko-http-testkit"
 
-  def pekkoDependency(defaultVersion: String): Dependency =
-    Option(System.getProperty("pekko.sources")) match {
+  def pekkoHttpDependency(defaultVersion: String): Dependency =
+    Option(System.getProperty("pekko.http.sources")) match {
       case Some(pekkoSources) =>
         Sources(pekkoSources)
       case None =>
-        Option(System.getProperty("pekko.build.pekko.version")) match {
+        Option(System.getProperty("pekko.build.pekko.http.version")) match {
           case Some("main")           => snapshotMain
           case Some("1.0.x")          => snapshot10x
           case Some("latest-release") => latestRelease
@@ -30,21 +30,20 @@ object PekkoDependency extends VersionRegex {
         }
     }
 
-  private val defaultPekkoVersion = System.getProperty("pekko.build.pekko.min.version", "1.0.2")
-  val minPekkoVersion: String     = "1.0.0"
-  val default: Dependency         = pekkoDependency(defaultPekkoVersion)
+  private val defaultPekkoHttpVersion = System.getProperty("pekko.build.pekko.http.min.version", "1.0.0")
+  val default: Dependency             = pekkoHttpDependency(defaultPekkoHttpVersion)
 
   lazy val snapshot10x   = Artifact(determineLatestSnapshot("1.0"), true)
   lazy val snapshotMain  = Artifact(determineLatestSnapshot(), true)
   lazy val latestRelease = Artifact(determineLatestRelease(), false)
 
-  val pekkoVersion: String = default match {
+  val pekkoHttpVersion: String = default match {
     case Artifact(version, _) => version
     case Sources(uri, _)      => uri
   }
 
-  def pekkoVersionDerivedFromDefault(overrideDefaultPekkoVersion: String): String =
-    pekkoDependency(overrideDefaultPekkoVersion) match {
+  def pekkoHttpVersionDerivedFromDefault(overrideDefaultPekkoHttpVersion: String): String =
+    pekkoHttpDependency(overrideDefaultPekkoHttpVersion) match {
       case Artifact(version, _) => version
       case Sources(uri, _)      => uri
     }
