@@ -53,7 +53,7 @@ object PekkoDependency {
         }
     }
 
-  private val defaultPekkoVersion = System.getProperty("pekko.build.pekko.min.version", "1.0.0")
+  private val defaultPekkoVersion = System.getProperty("pekko.build.pekko.min.version", "1.0.2")
   val default                     = pekkoDependency(defaultPekkoVersion)
 
   lazy val snapshot10x   = Artifact(determineLatestSnapshot("1.0"), true)
