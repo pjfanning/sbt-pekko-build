@@ -31,13 +31,13 @@ object PekkoHttpDependency extends VersionRegex {
     }
 
   private val defaultPekkoHttpVersion = System.getProperty("pekko.build.pekko.http.min.version", "1.0.0")
-  val default: Dependency             = pekkoHttpDependency(defaultPekkoHttpVersion)
+  lazy val default: Dependency        = pekkoHttpDependency(defaultPekkoHttpVersion)
 
   lazy val snapshot10x   = Artifact(determineLatestSnapshot("1.0"), true)
   lazy val snapshotMain  = Artifact(determineLatestSnapshot(), true)
   lazy val latestRelease = Artifact(determineLatestRelease(), false)
 
-  val pekkoHttpVersion: String = default match {
+  lazy val pekkoHttpVersion: String = default match {
     case Artifact(version, _) => version
     case Sources(uri, _)      => uri
   }

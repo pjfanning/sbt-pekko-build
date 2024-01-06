@@ -32,13 +32,13 @@ object PekkoDependency extends VersionRegex {
 
   private val defaultPekkoVersion = System.getProperty("pekko.build.pekko.min.version", "1.0.2")
   val minPekkoVersion: String     = "1.0.0"
-  val default: Dependency         = pekkoDependency(defaultPekkoVersion)
+  lazy val default: Dependency    = pekkoDependency(defaultPekkoVersion)
 
   lazy val snapshot10x   = Artifact(determineLatestSnapshot("1.0"), true)
   lazy val snapshotMain  = Artifact(determineLatestSnapshot(), true)
   lazy val latestRelease = Artifact(determineLatestRelease(), false)
 
-  val pekkoVersion: String = default match {
+  lazy val pekkoVersion: String = default match {
     case Artifact(version, _) => version
     case Sources(uri, _)      => uri
   }
