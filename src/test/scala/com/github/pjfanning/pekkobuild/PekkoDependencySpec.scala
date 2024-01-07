@@ -23,7 +23,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class PekkoDependencySpec extends AnyWordSpec with Matchers {
   "PekkoDependency" should {
     "eval pekkoVersionDerivedFromDefault" in {
-      PekkoDependency.pekkoVersionDerivedFromDefault("1.0.2") shouldEqual "1.0.2"
+      PekkoCoreDependency.versionDerivedFromDefault("1.0.2") shouldEqual "1.0.2"
     }
   }
 }
