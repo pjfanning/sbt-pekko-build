@@ -13,38 +13,45 @@
 
 package com.github.pjfanning.pekkobuild
 
-object PekkoDependency extends VersionRegex {
-  override val checkProject: String = "pekko-cluster-sharding-typed"
+trait PekkoDependency extends VersionRegex {
+  lazy val minVersion: String = "1.0.0"
+  val module: Option[String]
+  val currentVersion: String
 
-  def pekkoDependency(defaultVersion: String): Dependency =
-    Option(System.getProperty("pekko.sources")) match {
+  private lazy val moduleName = module match {
+    case Some(mName) => s"pekko.$mName"
+    case None => "pekko" // Main pekko module
+  }
+
+  def dependency(defaultVersion: String): Dependency = {
+    Option(System.getProperty(s"$moduleName.sources")) match {
       case Some(pekkoSources) =>
         Sources(pekkoSources)
       case None =>
-        Option(System.getProperty("pekko.build.pekko.version")) match {
+        Option(System.getProperty(s"pekko.build.$moduleName.version")) match {
           case Some("main")           => snapshotMain
           case Some("1.0.x")          => snapshot10x
           case Some("latest-release") => latestRelease
           case Some("default") | None => Artifact(defaultVersion)
-          case Some(other)            => Artifact(other, true)
+          case Some(other)            => Artifact(other, isSnapshot = true)
         }
     }
+  }
 
-  private val defaultPekkoVersion = System.getProperty("pekko.build.pekko.min.version", "1.0.2")
-  val minPekkoVersion: String     = "1.0.0"
-  lazy val default: Dependency    = pekkoDependency(defaultPekkoVersion)
+  private lazy val defaultVersion = System.getProperty(s"pekko.build.$moduleName.min.version", currentVersion)
+  lazy val default: Dependency    = dependency(defaultVersion)
 
-  lazy val snapshot10x   = Artifact(determineLatestSnapshot("1.0"), true)
-  lazy val snapshotMain  = Artifact(determineLatestSnapshot(), true)
-  lazy val latestRelease = Artifact(determineLatestRelease(), false)
+  lazy val snapshot10x: Artifact = Artifact(determineLatestSnapshot(minVersion), isSnapshot = true)
+  lazy val snapshotMain: Artifact = Artifact(determineLatestSnapshot(), isSnapshot = true)
+  lazy val latestRelease: Artifact = Artifact(determineLatestRelease(), isSnapshot = false)
 
-  lazy val pekkoVersion: String = default match {
+  lazy val version: String = default match {
     case Artifact(version, _) => version
     case Sources(uri, _)      => uri
   }
 
-  def pekkoVersionDerivedFromDefault(overrideDefaultPekkoVersion: String): String =
-    pekkoDependency(overrideDefaultPekkoVersion) match {
+  def versionDerivedFromDefault(overrideDefaultPekkoVersion: String): String =
+    dependency(overrideDefaultPekkoVersion) match {
       case Artifact(version, _) => version
       case Sources(uri, _)      => uri
     }

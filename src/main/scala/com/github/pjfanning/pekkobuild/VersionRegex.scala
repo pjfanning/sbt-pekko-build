@@ -22,9 +22,9 @@ trait VersionRegex {
   // `_2.13` is assumed
   protected val checkProject: String
 
-  protected def determineLatestSnapshot(prefix: String = ""): String = determineLatestVersion(true, prefix)
+  protected def determineLatestSnapshot(prefix: String = ""): String = determineLatestVersion(useSnapshots = true, prefix)
 
-  protected def determineLatestRelease(prefix: String = ""): String = determineLatestVersion(false, prefix)
+  protected def determineLatestRelease(prefix: String = ""): String = determineLatestVersion(useSnapshots = false, prefix)
 
   protected def determineLatestVersion(useSnapshots: Boolean, prefix: String): String = {
     import sbt.librarymanagement.Http.http
