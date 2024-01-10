@@ -9,6 +9,7 @@
 
 package com.github.pjfanning.pekkobuild
 
+import com.github.pjfanning.pekkobuild.PekkoCorePlugin.autoImport.pekkoCoreProject
 import sbt.plugins.JvmPlugin
 import sbt._
 import sbt.Keys._
@@ -16,7 +17,7 @@ import sbt.Keys._
 object PekkoInlinePlugin extends AutoPlugin {
   override def trigger: PluginTrigger = allRequirements
 
-  override def requires: Plugins = JvmPlugin
+  override def requires: Plugins = JvmPlugin && PekkoCorePlugin
 
   object autoImport extends PekkoInlineSettings
 
@@ -51,15 +52,14 @@ object PekkoInlinePlugin extends AutoPlugin {
   private val flagsForScala3 = Seq()
 
   override lazy val globalSettings = Seq(
-    pekkoInlineEnabled := !sys.props.contains("pekko.no.inline"),
-    pekkoInlineCoreProject := false
+    pekkoInlineEnabled := !sys.props.contains("pekko.no.inline")
   )
 
   override lazy val projectSettings = Seq(Compile / scalacOptions ++= {
     if (pekkoInlineEnabled.value) {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, n)) if n == 12 | n == 13 =>
-          flagsForScala2(pekkoInlineCoreProject.value)
+          flagsForScala2(pekkoCoreProject.value)
         case Some((3, _)) =>
           flagsForScala3
       }
