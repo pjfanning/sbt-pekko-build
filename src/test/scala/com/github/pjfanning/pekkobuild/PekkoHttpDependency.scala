@@ -18,7 +18,7 @@
 package com.github.pjfanning.pekkobuild
 
 object PekkoHttpDependency extends PekkoDependency {
-  override val checkProject: String = "pekko-http-testkit"
+  override val checkProject: String   = "pekko-http-testkit"
   override val module: Option[String] = Some("http")
   override val currentVersion: String = "1.0.0"
 }

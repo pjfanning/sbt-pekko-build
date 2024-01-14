@@ -36,16 +36,17 @@ object PekkoInlinePlugin extends AutoPlugin {
         // its safe to do inter sbt project inlining.
         "-opt-inline-from:org.apache.pekko.**"
       )
-    else baseInlineFlags ++ Seq(
-      // These are safe to inline even across modules since they are
-      // wrappers for cross compilation that is stable within Pekko core.
-      "-opt-inline-from:org.apache.pekko.dispatch.internal.SameThreadExecutionContext**",
-      "-opt-inline-from:org.apache.pekko.util.OptionConverters**",
-      "-opt-inline-from:org.apache.pekko.util.FutureConverters**",
-      "-opt-inline-from:org.apache.pekko.util.FunctionConverters**",
-      "-opt-inline-from:org.apache.pekko.util.PartialFunction**",
-      "-opt-inline-from:org.apache.pekko.util.JavaDurationConverters**"
-    )
+    else
+      baseInlineFlags ++ Seq(
+        // These are safe to inline even across modules since they are
+        // wrappers for cross compilation that is stable within Pekko core.
+        "-opt-inline-from:org.apache.pekko.dispatch.internal.SameThreadExecutionContext**",
+        "-opt-inline-from:org.apache.pekko.util.OptionConverters**",
+        "-opt-inline-from:org.apache.pekko.util.FutureConverters**",
+        "-opt-inline-from:org.apache.pekko.util.FunctionConverters**",
+        "-opt-inline-from:org.apache.pekko.util.PartialFunction**",
+        "-opt-inline-from:org.apache.pekko.util.JavaDurationConverters**"
+      )
   }
 
   // Optimizer not yet available for Scala3, see https://docs.scala-lang.org/overviews/compiler-options/optimizer.html

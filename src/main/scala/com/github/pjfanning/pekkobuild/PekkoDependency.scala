@@ -20,10 +20,10 @@ trait PekkoDependency extends VersionRegex {
 
   private lazy val moduleName = module match {
     case Some(mName) => s"pekko.$mName"
-    case None => "pekko" // Main pekko module
+    case None        => "pekko" // Main pekko module
   }
 
-  def dependency(defaultVersion: String): Dependency = {
+  def dependency(defaultVersion: String): Dependency =
     Option(System.getProperty(s"$moduleName.sources")) match {
       case Some(pekkoSources) =>
         Sources(pekkoSources)
@@ -36,13 +36,12 @@ trait PekkoDependency extends VersionRegex {
           case Some(other)            => Artifact(other, isSnapshot = true)
         }
     }
-  }
 
   private lazy val defaultVersion = System.getProperty(s"pekko.build.$moduleName.min.version", currentVersion)
   lazy val default: Dependency    = dependency(defaultVersion)
 
-  lazy val snapshot10x: Artifact = Artifact(determineLatestSnapshot(minVersion), isSnapshot = true)
-  lazy val snapshotMain: Artifact = Artifact(determineLatestSnapshot(), isSnapshot = true)
+  lazy val snapshot10x: Artifact   = Artifact(determineLatestSnapshot(minVersion), isSnapshot = true)
+  lazy val snapshotMain: Artifact  = Artifact(determineLatestSnapshot(), isSnapshot = true)
   lazy val latestRelease: Artifact = Artifact(determineLatestRelease(), isSnapshot = false)
 
   lazy val version: String = default match {
