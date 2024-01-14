@@ -18,7 +18,7 @@
 package com.github.pjfanning.pekkobuild
 
 object PekkoCoreDependency extends PekkoDependency {
-  override val checkProject: String = "pekko-cluster-sharding-typed"
+  override val checkProject: String   = "pekko-cluster-sharding-typed"
   override val module: Option[String] = None
   override val currentVersion: String = "1.0.2"
 }
