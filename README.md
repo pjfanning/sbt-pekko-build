@@ -8,6 +8,15 @@ Copies 2 features from different Pekko repos that are useful to share around our
  
 v0.3.0 and above also containe an autoplugin that enables Scala compile inling (Scala 2 only). This behaviour cannot be enabled on any Pekko 1.0.x module.
 
+The default is:
+```
+ThisBuild / pekkoInlineEnabled := true
+```
+On 1.0.x branches and on main branch if we haven't forked a 1.0.x branch yet, we must set:
+```
+ThisBuild / pekkoInlineEnabled := false
+```
+
 ## PekkoDependency
 
 This is usable as is in v0.2.x but in v0.3.0 and above, you need to add a file to your `project` dir like [PekkoCoreDependency.scala](https://github.com/apache/incubator-pekko-http/pull/418/files#diff-1f66132a50db37ce33500827316ccde362d7ac385333d98eca70659b7b8edd55)
