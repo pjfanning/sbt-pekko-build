@@ -23,8 +23,7 @@ package object pekkobuild {
     /** Adds either a source or a binary dependency, depending on whether the above settings are set */
     def addPekkoModuleDependency(module: String,
                                  config: String = "",
-                                 pekko: Dependency = PekkoDependency.default
-    ): Project =
+                                 pekko: Dependency): Project =
       pekko match {
         case Sources(sources, _) =>
           val moduleRef = ProjectRef(uri(sources), module)

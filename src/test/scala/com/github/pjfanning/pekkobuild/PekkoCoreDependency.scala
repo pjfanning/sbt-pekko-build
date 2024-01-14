@@ -17,13 +17,8 @@
 
 package com.github.pjfanning.pekkobuild
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
-class PekkoHttpDependencySpec extends AnyWordSpec with Matchers {
-  "PekkoHttpDependency" should {
-    "eval pekkoHttpVersionDerivedFromDefault" in {
-      PekkoHttpDependency.versionDerivedFromDefault("1.0.0") shouldEqual "1.0.0"
-    }
-  }
+object PekkoCoreDependency extends PekkoDependency {
+  override val checkProject: String = "pekko-cluster-sharding-typed"
+  override val module: Option[String] = None
+  override val currentVersion: String = "1.0.2"
 }

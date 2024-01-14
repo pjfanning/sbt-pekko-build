@@ -17,13 +17,8 @@
 
 package com.github.pjfanning.pekkobuild
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
-class PekkoHttpDependencySpec extends AnyWordSpec with Matchers {
-  "PekkoHttpDependency" should {
-    "eval pekkoHttpVersionDerivedFromDefault" in {
-      PekkoHttpDependency.versionDerivedFromDefault("1.0.0") shouldEqual "1.0.0"
-    }
-  }
+object PekkoHttpDependency extends PekkoDependency {
+  override val checkProject: String = "pekko-http-testkit"
+  override val module: Option[String] = Some("http")
+  override val currentVersion: String = "1.0.0"
 }
