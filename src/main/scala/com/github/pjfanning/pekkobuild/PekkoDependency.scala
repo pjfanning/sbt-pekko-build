@@ -14,7 +14,7 @@
 package com.github.pjfanning.pekkobuild
 
 trait PekkoDependency extends VersionRegex {
-  lazy val minVersion: String = "1.0.0"
+  val minVersion: String = "1.0.0"
   val module: Option[String]
   val currentVersion: String
 
