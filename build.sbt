@@ -24,7 +24,8 @@ developers := List(
   Developer(id = "pjfanning", name = "PJ Fanning", email = "", url = url("https://github.com/pjfanning"))
 )
 
-addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "1.1.3")
+addSbtPlugin("com.typesafe"   % "sbt-mima-plugin"     % "1.1.3")
+addSbtPlugin("org.mdedetrich" % "sbt-apache-sonatype" % "0.1.11")
 
 ThisBuild / githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test")))
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")

@@ -15,9 +15,9 @@ import sbt._
 import sbt.Keys._
 
 object PekkoInlinePlugin extends AutoPlugin {
-  override def trigger: PluginTrigger = allRequirements
+  override lazy val trigger: PluginTrigger = allRequirements
 
-  override def requires: Plugins = JvmPlugin && PekkoCorePlugin
+  override lazy val requires: Plugins = JvmPlugin && PekkoCorePlugin
 
   object autoImport extends PekkoInlineSettings
 
