@@ -17,6 +17,9 @@ On 1.0.x branches and on main branch if we haven't forked a 1.0.x branch yet, we
 ThisBuild / pekkoInlineEnabled := false
 ```
 
+When running local builds you can use `sbt -Dpekko.no.inline` to avoid the inlining. It is very expensive to inline (uses a lot more CPU and memory when it is enabled).
+
+
 ## PekkoDependency
 
 This is usable as is in v0.2.x but in v0.3.0 and above, you need to add a file to your `project` dir like [PekkoCoreDependency.scala](https://github.com/apache/incubator-pekko-http/pull/418/files#diff-1f66132a50db37ce33500827316ccde362d7ac385333d98eca70659b7b8edd55)
