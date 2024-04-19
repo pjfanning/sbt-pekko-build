@@ -24,14 +24,12 @@ import com.gradle.develocity.agent.sbt.DevelocityPlugin.autoImport.{
   ProjectId,
   Publishing
 }
-import sbt.{AutoPlugin, Plugins, PluginTrigger, Setting}
+import sbt.{url, AutoPlugin, Plugins, PluginTrigger, Setting}
 import sbt.Keys.insideCI
-
-import java.net.URI
 
 object PekkoDevelocityPlugin extends AutoPlugin {
 
-  private val ApacheDevelocityUrl   = URI.create("https://ge.apache.org").toURL
+  private val ApacheDevelocityUrl   = url("https://ge.apache.org")
   private val PekkoProjectId        = ProjectId("pekko")
   private val ObfuscatedIPv4Address = "0.0.0.0"
 
