@@ -18,7 +18,12 @@
 package com.github.pjfanning.pekkobuild
 
 import com.gradle.develocity.agent.sbt.DevelocityPlugin
-import com.gradle.develocity.agent.sbt.DevelocityPlugin.autoImport.{develocityConfiguration, ProjectId, Publishing}
+import com.gradle.develocity.agent.sbt.DevelocityPlugin.autoImport.{
+  develocityConfiguration,
+  FlakyTestPolicy,
+  ProjectId,
+  Publishing
+}
 import sbt.{AutoPlugin, Plugins, PluginTrigger, Setting}
 
 import java.net.URI
@@ -37,22 +42,31 @@ object PekkoDevelocityPlugin extends AutoPlugin {
   override lazy val buildSettings: Seq[Setting[_]] = Seq(
     develocityConfiguration := {
       val original = develocityConfiguration.value
-      original
-        .withProjectId(PekkoProjectId)
-        .withServer(
-          original.server
-            .withUrl(Some(ApacheDevelocityUrl))
-            .withAllowUntrusted(false)
-        )
-        .withBuildScan(
-          original.buildScan
-            .withPublishing(Publishing.onlyIf(_.authenticated))
-            .withBackgroundUpload(!isCI)
-            .withObfuscation(
-              original.buildScan.obfuscation
-                .withIpAddresses(_.map(_ => ObfuscatedIPv4Address))
-            )
-        )
+      val apacheDevelocityConfiguration =
+        original
+          .withProjectId(PekkoProjectId)
+          .withServer(
+            original.server
+              .withUrl(Some(ApacheDevelocityUrl))
+              .withAllowUntrusted(false)
+          )
+          .withBuildScan(
+            original.buildScan
+              .withPublishing(Publishing.onlyIf(_.authenticated))
+              .withBackgroundUpload(!isCI)
+              .withObfuscation(
+                original.buildScan.obfuscation
+                  .withIpAddresses(_.map(_ => ObfuscatedIPv4Address))
+              )
+          )
+      if (isCI) {
+        apacheDevelocityConfiguration
+          .withTestRetryConfiguration(
+            original.testRetryConfiguration
+              .withMaxRetries(1)
+              .withFlakyTestPolicy(FlakyTestPolicy.Fail)
+          )
+      } else apacheDevelocityConfiguration
     }
   )
 }
