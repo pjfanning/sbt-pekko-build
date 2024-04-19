@@ -25,6 +25,7 @@ import com.gradle.develocity.agent.sbt.DevelocityPlugin.autoImport.{
   Publishing
 }
 import sbt.{AutoPlugin, Plugins, PluginTrigger, Setting}
+import sbt.Keys.insideCI
 
 import java.net.URI
 
@@ -34,13 +35,13 @@ object PekkoDevelocityPlugin extends AutoPlugin {
   private val PekkoProjectId        = ProjectId("pekko")
   private val ObfuscatedIPv4Address = "0.0.0.0"
 
-  private lazy val isCI = sys.env.get("CI").exists(_.toBoolean)
-
   override lazy val trigger: PluginTrigger = allRequirements
   override lazy val requires: Plugins      = DevelocityPlugin
 
   override lazy val buildSettings: Seq[Setting[_]] = Seq(
     develocityConfiguration := {
+      val isCI = insideCI.value
+
       val original = develocityConfiguration.value
       val apacheDevelocityConfiguration =
         original
@@ -64,7 +65,7 @@ object PekkoDevelocityPlugin extends AutoPlugin {
           .withTestRetryConfiguration(
             original.testRetryConfiguration
               .withMaxRetries(1)
-              .withFlakyTestPolicy(FlakyTestPolicy.Fail)
+              .withFlakyTestPolicy(FlakyTestPolicy.Fail) // preserve the original build outcome in case of flaky tests
           )
       } else apacheDevelocityConfiguration
     }
