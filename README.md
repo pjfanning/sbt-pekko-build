@@ -31,7 +31,7 @@ This is usable as is in v0.2.x but in v0.3.0 and above, you need to add a file t
 
 ## PekkoDevelocityPlugin
 
-This autoplugin enables automatic publishing of Build Scan® for every CI build, as well as for every local build executed by an authenticated Apache committer, to the [Apache Develocity](https://ge.apache.org) instance.
+This autoplugin enables automatic publishing of [Develocity](https://gradle.com/) Build Scan® for every CI build, as well as for every local build executed by an authenticated Apache committer, to the [Apache Develocity](https://ge.apache.org) instance.
 
 To enable build scans publishing on CI the project needs to have `DEVELOCITY_ACCESS_KEY` environment variable set to the value of the Develocity access key as described [here](https://docs.gradle.com/develocity/sbt-plugin/#via_environment_variable).
 
