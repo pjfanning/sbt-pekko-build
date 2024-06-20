@@ -45,7 +45,7 @@ scalacOptions ++= {
 ThisBuild / scalaVersion := "2.12.18"
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.2.17" % Test
+  "org.scalatest" %% "scalatest" % "3.2.18" % Test
 )
 
 homepage := Some(url("https://github.com/pjfanning/sbt-pekko-build"))
@@ -58,6 +58,7 @@ developers := List(
 
 addSbtPlugin("com.typesafe"   % "sbt-mima-plugin"     % "1.1.3")
 addSbtPlugin("org.mdedetrich" % "sbt-apache-sonatype" % "0.1.11")
+addSbtPlugin("com.gradle"     % "sbt-develocity"      % "1.0.1")
 
 ThisBuild / githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test")))
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")

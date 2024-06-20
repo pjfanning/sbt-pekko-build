@@ -29,3 +29,10 @@ This is usable as is in v0.2.x but in v0.3.0 and above, you need to add a file t
 * `-Dpekko.build.pekko.version=main` will find latest snapshot for `main` branch (December 2023 - this evals to `1.1.0-M0+...-SNAPSHOT`)
 * `-Dpekko.build.pekko.version=1.0.x` will find latest snapshot for `1.0.x` branch
 
+## PekkoDevelocityPlugin
+
+This autoplugin enables automatic publishing of [Develocity](https://gradle.com/) Build Scan® for every CI build, as well as for every local build executed by an authenticated Apache committer, to the [Apache Develocity](https://ge.apache.org) instance.
+
+To enable build scans publishing on CI the project needs to have `DEVELOCITY_ACCESS_KEY` environment variable set to the value of the Develocity access key as described [here](https://docs.gradle.com/develocity/sbt-plugin/#via_environment_variable).
+
+For more details please see the [Develocity sbt Plugin User Manual](https://docs.gradle.com/develocity/sbt-plugin/).
