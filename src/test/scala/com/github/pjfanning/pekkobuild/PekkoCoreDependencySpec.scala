@@ -20,8 +20,8 @@ package com.github.pjfanning.pekkobuild
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class PekkoDependencySpec extends AnyWordSpec with Matchers {
-  "PekkoDependency" should {
+class PekkoCoreDependencySpec extends AnyWordSpec with Matchers {
+  "PekkoCoreDependency" should {
     "eval pekkoVersionDerivedFromDefault" in {
       PekkoCoreDependency.versionDerivedFromDefault("1.0.2") shouldEqual "1.0.2"
     }
