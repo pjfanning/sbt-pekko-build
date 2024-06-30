@@ -42,10 +42,10 @@ scalacOptions ++= {
   } else Nil
 }
 
-ThisBuild / scalaVersion := "2.12.18"
+ThisBuild / scalaVersion := "2.12.19"
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.2.17" % Test
+  "org.scalatest" %% "scalatest" % "3.2.19" % Test
 )
 
 homepage := Some(url("https://github.com/pjfanning/sbt-pekko-build"))
