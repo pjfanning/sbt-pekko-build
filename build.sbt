@@ -42,7 +42,7 @@ scalacOptions ++= {
   } else Nil
 }
 
-ThisBuild / scalaVersion := "2.12.19"
+ThisBuild / scalaVersion := "2.12.20"
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.2.19" % Test
@@ -56,7 +56,7 @@ developers := List(
   Developer(id = "pjfanning", name = "PJ Fanning", email = "", url = url("https://github.com/pjfanning"))
 )
 
-addSbtPlugin("com.typesafe"   % "sbt-mima-plugin"     % "1.1.3")
+addSbtPlugin("com.typesafe"   % "sbt-mima-plugin"     % "1.1.4")
 addSbtPlugin("org.mdedetrich" % "sbt-apache-sonatype" % "0.1.11")
 
 ThisBuild / githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test")))
