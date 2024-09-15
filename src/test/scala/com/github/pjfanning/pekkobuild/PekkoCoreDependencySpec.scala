@@ -25,5 +25,8 @@ class PekkoCoreDependencySpec extends AnyWordSpec with Matchers {
     "eval pekkoVersionDerivedFromDefault" in {
       PekkoCoreDependency.versionDerivedFromDefault("1.0.2") shouldEqual "1.0.2"
     }
+    "eval doc link" in {
+      PekkoCoreDependency.default.link shouldEqual "1.0"
+    }
   }
 }
