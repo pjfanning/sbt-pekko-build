@@ -38,10 +38,16 @@ package object pekkobuild {
               else
                 "org.apache.pekko" %% module % pekkoVersion % config
             },
-            resolvers ++= (if (pekkoSnapshot)
+            resolvers ++= (if (pekkoSnapshot && !snapshotResolverInstalled)
                              Seq(Resolver.ApacheMavenSnapshotsRepo)
                            else Nil)
           )
+      }
+
+    private def snapshotResolverInstalled: Boolean =
+      resolvers.value.exists {
+        case mr: MavenRepository => mr.root == Resolver.ApacheMavenSnapshotsRepo.root
+        case _ => false
       }
   }
 }
