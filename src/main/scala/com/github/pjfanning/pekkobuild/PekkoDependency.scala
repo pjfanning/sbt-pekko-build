@@ -32,6 +32,7 @@ trait PekkoDependency extends VersionRegex {
           case Some("main")           => snapshotMain
           case Some("1.0.x")          => snapshot10x
           case Some("1.1.x")          => snapshot11x
+          case Some("1.2.x")          => snapshot12x
           case Some("latest-release") => latestRelease
           case Some("default") | None => Artifact(defaultVersion)
           case Some(other)            => Artifact(other, isSnapshot = true)
@@ -42,7 +43,8 @@ trait PekkoDependency extends VersionRegex {
   lazy val default: Dependency    = dependency(defaultVersion)
 
   lazy val snapshot10x: Artifact   = Artifact(determineLatestSnapshot("1.0"), isSnapshot = true)
-  lazy val snapshot10x: Artifact   = Artifact(determineLatestSnapshot("1.1"), isSnapshot = true)
+  lazy val snapshot11x: Artifact   = Artifact(determineLatestSnapshot("1.1"), isSnapshot = true)
+  lazy val snapshot12x: Artifact   = Artifact(determineLatestSnapshot("1.2"), isSnapshot = true)
   lazy val snapshotMain: Artifact  = Artifact(determineLatestSnapshot(), isSnapshot = true)
   lazy val latestRelease: Artifact = Artifact(determineLatestRelease(), isSnapshot = false)
 
