@@ -20,6 +20,7 @@ organization := "com.github.pjfanning"
 description  := "sbt plugin to share certain build classes between Apache Pekko projects"
 
 sbtPlugin := true
+sbtPluginPublishLegacyMavenStyle := true
 
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
 // compile settings
