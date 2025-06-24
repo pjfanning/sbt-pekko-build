@@ -60,6 +60,12 @@ developers := List(
 addSbtPlugin("com.typesafe"   % "sbt-mima-plugin"     % "1.1.4")
 addSbtPlugin("org.mdedetrich" % "sbt-apache-sonatype" % "0.1.12")
 
+ThisBuild / publishTo := {
+  val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
+  if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
+  else localStaging.value
+}
+
 ThisBuild / githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test")))
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches :=
