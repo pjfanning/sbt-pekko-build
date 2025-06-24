@@ -44,7 +44,7 @@ trait VersionRegex {
     val body = Await
       .result(
         http.run(url(s"${repo}org/apache/pekko/${checkProject}_2.13/")),
-        10.seconds
+        1.minute
       )
       .bodyAsString
 
