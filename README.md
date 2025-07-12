@@ -30,3 +30,6 @@ This is usable as is in v0.2.x but in v0.3.0 and above, you need to add a file t
 * `-Dpekko.build.pekko.version=1.0.x` will find latest snapshot for `1.0.x` branch
 * `-Dpekko.build.pekko.version=1.1.x` will find latest snapshot for `1.1.x` branch
 * `-Dpekko.build.pekko.version=1.2.x` will find latest snapshot for `1.2.x` branch
+* `-Dpekko.build.pekko.version=1.3.x` will find latest snapshot for `1.3.x` branch
+* `-Dpekko.build.pekko.version=2.0.x` will find latest snapshot for `2.0.x` branch
+
