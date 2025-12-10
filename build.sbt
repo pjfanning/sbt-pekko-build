@@ -19,7 +19,7 @@ name         := "sbt-pekko-build"
 organization := "com.github.pjfanning"
 description  := "sbt plugin to share certain build classes between Apache Pekko projects"
 
-sbtPlugin := true
+sbtPlugin                        := true
 sbtPluginPublishLegacyMavenStyle := false
 
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8")

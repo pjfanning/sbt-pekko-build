@@ -54,10 +54,11 @@ trait VersionRegex {
       if (useSnapshots)
         versionR
           .findAllMatchIn(body)
-          .map { case Groups(full, ep, maj, min, _, _, tagNumber, offset) =>
+          .map { case Groups(full, ep, maj, min, milestone, _, tagNumber, offset) =>
             (ep.toInt,
              maj.toInt,
              min.toInt,
+             Option(milestone).map(evalMilestone).getOrElse(Integer.MAX_VALUE),
              Option(tagNumber).map(_.toInt).getOrElse(Integer.MAX_VALUE),
              offset.toInt
             ) -> full
@@ -68,8 +69,13 @@ trait VersionRegex {
       else
         versionR
           .findAllMatchIn(body)
-          .map { case Groups(full, ep, maj, min, _, _, tagNumber) =>
-            (ep.toInt, maj.toInt, min.toInt, Option(tagNumber).map(_.toInt).getOrElse(Integer.MAX_VALUE)) -> full
+          .map { case Groups(full, ep, maj, min, milestone, _, tagNumber) =>
+            (ep.toInt,
+             maj.toInt,
+             min.toInt,
+             Option(milestone).map(evalMilestone).getOrElse(Integer.MAX_VALUE),
+             Option(tagNumber).map(_.toInt).getOrElse(Integer.MAX_VALUE)
+            ) -> full
           }
           .filter(_._2.startsWith(prefix))
           .toVector
@@ -77,4 +83,17 @@ trait VersionRegex {
 
     allVersions.last._2
   }
+
+  private def evalMilestone(in: String): Int =
+    try
+      if (in.startsWith("RC")) {
+        in.substring(2).toInt
+      } else if (in.startsWith("M")) {
+        in.substring(1).toInt
+      } else {
+        Integer.MAX_VALUE
+      }
+    catch {
+      case _: Throwable => Integer.MAX_VALUE
+    }
 }
