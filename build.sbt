@@ -46,7 +46,7 @@ scalacOptions ++= {
 ThisBuild / scalaVersion := "2.12.20"
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.2.19" % Test
+  "org.scalatest" %% "scalatest" % "3.2.20" % Test
 )
 
 homepage := Some(url("https://github.com/pjfanning/sbt-pekko-build"))
@@ -57,7 +57,7 @@ developers := List(
   Developer(id = "pjfanning", name = "PJ Fanning", email = "", url = url("https://github.com/pjfanning"))
 )
 
-addSbtPlugin("com.typesafe"   % "sbt-mima-plugin"     % "1.1.5")
+addSbtPlugin("com.typesafe"   % "sbt-mima-plugin"     % "1.1.6")
 addSbtPlugin("org.mdedetrich" % "sbt-apache-sonatype" % "0.1.12")
 
 ThisBuild / publishTo := {
