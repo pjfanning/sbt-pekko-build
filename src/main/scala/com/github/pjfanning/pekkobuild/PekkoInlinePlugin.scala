@@ -62,13 +62,14 @@ object PekkoInlinePlugin extends AutoPlugin {
 
   override lazy val globalSettings = Seq(
     pekkoInlineEnabled := {
-      val prop    = "pekko.no.inline"
-      val enabled = !sys.props.contains(prop)
+      val inCI    = insideCI.value
+      val prop    = "pekko.inline"
+      val enabled = sys.props.contains(prop) || inCI
       val log     = sLog.value
-      if (enabled)
-        log.info(s"Scala 2 optimizer/inliner enabled, to disable set the $prop system property")
-      else
-        log.info(s"Scala 2 optimizer/inliner disabled, to enable remove the $prop system property")
+      if (enabled && inCI)
+        log.info(s"Scala 2 optimizer/inliner enabled due to execution in CI")
+      else if (enabled)
+        log.info(s"Scala 2 optimizer/inliner enabled due to $prop system property")
       enabled
     }
   )
